@@ -18,4 +18,10 @@ public class AppScreenTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "screen_time_id")
     private ScreenTime screenTime;
+
+    private String name;
+
+    private String category;
+
+    private Double duration;
 }

@@ -11,11 +11,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScreenTimeService {
     @Transactional
-    public List<AppScreenTimeResponse> updateScreenTime(Long userId, List<AppScreenTimeRequst> request) {
+    public ScreenTimeResponse updateScreenTime(Long userId, List<AppScreenTimeRequest> request) {
         return null;
     }
 
-    public List<AppScreenTimeResponse> findScreenTime(Long userId) {
+    public ScreenTimeResponse findScreenTime(Long userId) {
         return null;
     }
 }

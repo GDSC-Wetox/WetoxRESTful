@@ -10,4 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppScreenTimeResponse {
+    private String appName;
+    private String appCategory;
+    private Double duration;
 }
