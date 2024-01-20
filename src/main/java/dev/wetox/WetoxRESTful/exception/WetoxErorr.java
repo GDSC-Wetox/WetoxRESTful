@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public enum WetoxErorr {
     DUPLICATED_USER_REGISTER("중복된 사용자 등록입니다.", BAD_REQUEST),
     MEMBER_NOT_FOUND("존재하지 않는 사용자입니다.", NOT_FOUND),
+    SCREEN_TIME_NOT_FOUND("스크린 타임이 존재하지 않습니다.", NOT_FOUND),
     ;
 
     private final String message;

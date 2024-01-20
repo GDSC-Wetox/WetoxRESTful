@@ -25,6 +25,6 @@ public class ScreenTimeController {
     public ResponseEntity<ScreenTimeResponse> findScreenTime(
             @PathVariable Long userId
     ) {
-        return ResponseEntity.ok(screenTimeService.findScreenTime(userId));
+        return ResponseEntity.ok(screenTimeService.retrieveScreenTime(userId));
     }
 }
