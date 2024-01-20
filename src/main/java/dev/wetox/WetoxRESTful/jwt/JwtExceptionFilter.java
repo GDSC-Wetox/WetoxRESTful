@@ -1,6 +1,8 @@
 package dev.wetox.WetoxRESTful.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.wetox.WetoxRESTful.exception.WetoxErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -15,6 +17,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 
 @Slf4j
 @Component
@@ -26,16 +32,22 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         try {
             filterChain.doFilter(request, response);
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
-//            response.setStatus(401);
-//            response.setContentType("application/json");
-//            response.setCharacterEncoding("UTF-8");
-//            objectMapper.writeValue(response.getWriter(), "nono"); // 에러 응답
+            response.setStatus(401);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            objectMapper.writeValue(
+                    response.getWriter(),
+                    JwtErrorResponse.builder()
+                            .timestamp(LocalDateTime.now().format(ISO_DATE_TIME))
+                            .error("만료된 JWT 입니다.")
+                            .build());
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
         } catch (IllegalArgumentException e) {
