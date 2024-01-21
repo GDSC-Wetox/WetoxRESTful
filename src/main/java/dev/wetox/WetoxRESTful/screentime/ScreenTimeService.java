@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,19 +16,21 @@ import java.util.List;
 public class ScreenTimeService {
     private final UserRepository userRepository;
     private final ScreenTimeRepository screenTimeRepository;
-    private final AppScreenTimeRepository appScreenTimeRepository;
 
     @Transactional
     public ScreenTimeResponse updateScreenTime(Long userId, List<AppScreenTimeRequest> request) {
-        User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        User user = userRepository.findById(userId)
+                .orElseThrow(MemberNotFoundException::new);
         ScreenTime screenTime = ScreenTime.build(user, request);
         screenTimeRepository.save(screenTime);
         return ScreenTimeResponse.build(user, screenTime);
     }
 
     public ScreenTimeResponse retrieveScreenTime(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
-        ScreenTime screenTime = screenTimeRepository.findLatestByUserId(userId).orElseThrow(ScreenTimeNotFoundException::new);
+        User user = userRepository.findById(userId)
+                .orElseThrow(MemberNotFoundException::new);
+        ScreenTime screenTime = screenTimeRepository.findLatestByUserId(userId)
+                .orElseThrow(ScreenTimeNotFoundException::new);
         return ScreenTimeResponse.build(user, screenTime);
     }
 }

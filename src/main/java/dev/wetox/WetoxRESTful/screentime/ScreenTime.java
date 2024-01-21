@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -29,27 +29,19 @@ public class ScreenTime {
 
     private Double totalDuration;
 
-    @OneToMany(mappedBy = "screenTime", cascade = PERSIST)
+    @OneToMany(mappedBy = "screenTime", cascade = ALL)
     private List<AppScreenTime> appScreenTimes = new ArrayList<>();
 
     public static ScreenTime build(User user, List<AppScreenTimeRequest> appScreenTimes) {
         ScreenTime screenTime = new ScreenTime();
         screenTime.user = user;
         screenTime.updatedDate = LocalDateTime.now();
-
-        double totalDuration = 0.0;
-        for (AppScreenTimeRequest app: appScreenTimes) {
-            AppScreenTime appScreenTime = AppScreenTime.builder()
-                    .screenTime(screenTime)
-                    .name(app.getName())
-                    .category(app.getCategory())
-                    .duration(app.getDuration())
-                    .build();
-            totalDuration += app.getDuration();
-            screenTime.getAppScreenTimes().add(appScreenTime);
+        for (AppScreenTimeRequest appScreenTime: appScreenTimes) {
+            screenTime.appScreenTimes.add(AppScreenTime.build(screenTime, appScreenTime));
         }
-        screenTime.totalDuration = totalDuration;
-
+        screenTime.totalDuration = screenTime.appScreenTimes.stream()
+                .mapToDouble(AppScreenTime::getDuration)
+                .sum();
         return screenTime;
     }
 }

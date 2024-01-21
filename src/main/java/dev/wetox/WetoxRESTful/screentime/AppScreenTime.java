@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = PROTECTED)
 public class AppScreenTime {
     @Id
     @GeneratedValue
@@ -25,4 +24,13 @@ public class AppScreenTime {
     private String category;
 
     private Double duration;
+
+    public static AppScreenTime build(ScreenTime screenTime, AppScreenTimeRequest appScreenTimeRequest) {
+        AppScreenTime appScreenTime = new AppScreenTime();
+        appScreenTime.screenTime = screenTime;
+        appScreenTime.name = appScreenTimeRequest.getName();
+        appScreenTime.category = appScreenTimeRequest.getCategory();
+        appScreenTime.duration = appScreenTimeRequest.getDuration();
+        return appScreenTime;
+    }
 }
