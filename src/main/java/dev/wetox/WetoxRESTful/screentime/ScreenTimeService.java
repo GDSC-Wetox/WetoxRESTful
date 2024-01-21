@@ -5,6 +5,9 @@ import dev.wetox.WetoxRESTful.exception.ScreenTimeNotFoundException;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +32,12 @@ public class ScreenTimeService {
     public ScreenTimeResponse retrieveScreenTime(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(MemberNotFoundException::new);
-        ScreenTime screenTime = screenTimeRepository.findLatestByUserId(userId)
-                .orElseThrow(ScreenTimeNotFoundException::new);
-        return ScreenTimeResponse.build(user, screenTime);
+        Page<ScreenTime> screenTimePage
+                = screenTimeRepository.findLatestByUserId(userId, PageRequest.of(0, 1));
+        List<ScreenTime> screenTimes = screenTimePage.getContent();
+        if (screenTimes.isEmpty()) {
+            throw new ScreenTimeNotFoundException();
+        }
+        return ScreenTimeResponse.build(user, screenTimes.get(0));
     }
 }
