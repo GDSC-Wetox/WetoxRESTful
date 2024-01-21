@@ -22,7 +22,7 @@ public class ScreenTimeController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ScreenTimeResponse> findScreenTime(
+    public ResponseEntity<ScreenTimeResponse> retrieveScreenTime(
             @PathVariable Long userId
     ) {
         return ResponseEntity.ok(screenTimeService.retrieveScreenTime(userId));
