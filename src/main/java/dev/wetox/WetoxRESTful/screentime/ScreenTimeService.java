@@ -22,26 +22,8 @@ public class ScreenTimeService {
     @Transactional
     public ScreenTimeResponse updateScreenTime(Long userId, List<AppScreenTimeRequest> request) {
         User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
-
-        ScreenTime screenTime = new ScreenTime(); // builder를 사용하면 list 필드가 null이 됨;;
-        screenTime.setUser(user);
-        screenTime.setUpdatedDate(LocalDateTime.now());
+        ScreenTime screenTime = ScreenTime.build(user, request);
         screenTimeRepository.save(screenTime);
-
-        double totalDuration = 0.0;
-        for (AppScreenTimeRequest appRequest: request) {
-            AppScreenTime appScreenTime = AppScreenTime.builder()
-                    .screenTime(screenTime)
-                    .name(appRequest.getName())
-                    .category(appRequest.getCategory())
-                    .duration(appRequest.getDuration())
-                    .build();
-            totalDuration += appRequest.getDuration();
-            screenTime.getAppScreenTimes().add(appScreenTime);
-            appScreenTimeRepository.save(appScreenTime);
-        }
-        screenTime.setTotalDuration(totalDuration);
-
         return ScreenTimeResponse.build(user, screenTime);
     }
 
