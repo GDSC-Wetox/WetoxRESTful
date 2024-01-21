@@ -42,24 +42,12 @@ public class ScreenTimeService {
         }
         screenTime.setTotalDuration(totalDuration);
 
-        return buildScreenTimeResponse(user, screenTime);
+        return ScreenTimeResponse.build(user, screenTime);
     }
 
     public ScreenTimeResponse retrieveScreenTime(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
         ScreenTime screenTime = screenTimeRepository.findLatestByUserId(userId).orElseThrow(ScreenTimeNotFoundException::new);
-        return buildScreenTimeResponse(user, screenTime);
-    }
-
-    private ScreenTimeResponse buildScreenTimeResponse(User user, ScreenTime screenTime) {
-        return ScreenTimeResponse.builder()
-                .nickname(user.getNickname())
-                .updatedDate(screenTime.getUpdatedDate())
-                .totalDuration(screenTime.getTotalDuration())
-                .appScreenTimes(
-                        screenTime.getAppScreenTimes().stream()
-                                .map(AppScreenTimeResponse::new)
-                                .toList())
-                .build();
+        return ScreenTimeResponse.build(user, screenTime);
     }
 }
