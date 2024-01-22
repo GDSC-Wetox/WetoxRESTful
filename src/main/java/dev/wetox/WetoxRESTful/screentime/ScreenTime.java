@@ -2,17 +2,19 @@ package dev.wetox.WetoxRESTful.screentime;
 
 import dev.wetox.WetoxRESTful.user.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor(access = PROTECTED)
 public class ScreenTime {
     @Id
     @GeneratedValue
@@ -25,8 +27,21 @@ public class ScreenTime {
 
     private LocalDateTime updatedDate;
 
-    private Double screenTimePerDays;
+    private Double totalDuration;
 
-    @OneToMany(mappedBy = "screenTime")
-    private List<AppScreenTime> appScreenTimes;
+    @OneToMany(mappedBy = "screenTime", cascade = ALL)
+    private List<AppScreenTime> appScreenTimes = new ArrayList<>();
+
+    public static ScreenTime build(User user, List<AppScreenTimeRequest> appScreenTimes) {
+        ScreenTime screenTime = new ScreenTime();
+        screenTime.user = user;
+        screenTime.updatedDate = LocalDateTime.now();
+        for (AppScreenTimeRequest appScreenTime: appScreenTimes) {
+            screenTime.appScreenTimes.add(AppScreenTime.build(screenTime, appScreenTime));
+        }
+        screenTime.totalDuration = screenTime.appScreenTimes.stream()
+                .mapToDouble(AppScreenTime::getDuration)
+                .sum();
+        return screenTime;
+    }
 }
