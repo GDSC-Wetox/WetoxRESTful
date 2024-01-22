@@ -8,7 +8,6 @@ import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Getter
-@Setter
 public class Badge {
     @Id
     @GeneratedValue
@@ -19,4 +18,11 @@ public class Badge {
 
     @Enumerated(STRING)
     private BadgeResolver badgeResolver;
+
+    public static Badge build(BadgeResolver badgeResolver) {
+        Badge badge = new Badge();
+        badge.name = badgeResolver.name();
+        badge.badgeResolver = badgeResolver;
+        return badge;
+    }
 }

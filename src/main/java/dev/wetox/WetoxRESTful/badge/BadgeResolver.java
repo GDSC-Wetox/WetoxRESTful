@@ -7,6 +7,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum BadgeResolver {
+    WELCOME(new BadgeResolvable() {
+        @Override
+        public boolean resolve(User user) {
+            return true;
+        }
+    }),
     NO_SCREEN_TIME_ONE_DAY(new BadgeResolvable() {
         @Override
         public boolean resolve(User user) {
