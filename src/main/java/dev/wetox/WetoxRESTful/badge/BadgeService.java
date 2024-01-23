@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,14 +19,26 @@ public class BadgeService {
     private final BadgeRepository badgeRepository;
     private final UserBadgeRepository userBadgeRepository;
 
-    public List<UserBadgeResponse> listRewardedBadge(Long userId) {
+    public List<BadgeResponse> listRewardedBadge(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        List<Badge> rewardedBadges = userBadgeRepository.findAllByUser(user).stream()
+                .map(UserBadge::getBadge)
+                .toList();
         List<UserBadge> userBadges = userBadgeRepository.findAllByUser(user);
-        return userBadges.stream().map(UserBadgeResponse::new).toList();
+        List<Badge> notRewardedBadges = badgeRepository.findAll().stream()
+                .filter(badge -> !rewardedBadges.contains(badge))
+                .toList();
+        return Stream.concat(
+                userBadges.stream()
+                        .map(BadgeResponse::buildRewarded),
+                notRewardedBadges.stream()
+                        .map(BadgeResponse::buildNotRewarded)
+        ).toList();
+
     }
 
     @Transactional
-    public List<UserBadgeResponse> updateBadge(Long userId) {
+    public List<BadgeResponse> updateBadge(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
         List<Badge> rewardedBadges = userBadgeRepository.findAllByUser(user).stream()
                 .map(UserBadge::getBadge)

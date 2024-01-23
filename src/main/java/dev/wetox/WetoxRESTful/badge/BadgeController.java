@@ -18,14 +18,14 @@ public class BadgeController {
     private final BadgeService badgeService;
 
     @GetMapping
-    public ResponseEntity<List<UserBadgeResponse>> listRewardedBadge(
+    public ResponseEntity<List<BadgeResponse>> listRewardedBadge(
             @AuthenticationPrincipal User user
     ) {
         return ResponseEntity.ok(badgeService.listRewardedBadge(user.getId()));
     }
 
     @PostMapping
-    public ResponseEntity<List<UserBadgeResponse>> updateBadge(
+    public ResponseEntity<List<BadgeResponse>> updateBadge(
             @AuthenticationPrincipal User user
     ) {
         return ResponseEntity.ok(badgeService.updateBadge(user.getId()));
