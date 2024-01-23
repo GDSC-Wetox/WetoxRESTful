@@ -9,19 +9,19 @@ import lombok.RequiredArgsConstructor;
 public enum BadgeResolver {
     WELCOME(new BadgeResolvable() {
         @Override
-        public boolean resolve(User user) {
+        public boolean resolve(User user, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
             return true;
         }
     }),
     NO_SCREEN_TIME_ONE_DAY(new BadgeResolvable() {
         @Override
-        public boolean resolve(User user) {
+        public boolean resolve(User user, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
             return false;
         }
     }),
     NO_SCREEN_TIME_ONE_WEEK(new BadgeResolvable() {
         @Override
-        public boolean resolve(User user) {
+        public boolean resolve(User user, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
             return false;
         }
     }),
@@ -29,7 +29,7 @@ public enum BadgeResolver {
 
     private final BadgeResolvable badgeResolvable;
 
-    public boolean resolve(User user) {
-        return badgeResolvable.resolve(user);
+    public boolean resolve(User user, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
+        return badgeResolvable.resolve(user, badgeRepository, userBadgeRepository);
     }
 }

@@ -47,7 +47,7 @@ public class BadgeService {
                 .filter(badge -> !rewardedBadges.contains(badge))
                 .toList();
         for (Badge badge: notRewardedBadges) {
-            if (!badge.getBadgeResolver().resolve(user)) {
+            if (!badge.getBadgeResolver().resolve(user, badgeRepository, userBadgeRepository)) {
                 continue;
             }
             UserBadge userBadge = UserBadge.build(user, badge);
