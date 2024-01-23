@@ -2,7 +2,6 @@ package dev.wetox.WetoxRESTful.badge;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import static jakarta.persistence.EnumType.STRING;
 
