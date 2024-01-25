@@ -24,14 +24,14 @@ public class FriendshipController {
         return ResponseEntity.ok(friendship);
     }
 
-    @PutMapping("/request/{toId}")
+    @PostMapping("/accept/{toId}")
     public ResponseEntity<String> acceptFriendship(@AuthenticationPrincipal User user, @PathVariable Long toId) {
         friendshipService.accept(user.getId(), toId);
         return ResponseEntity.ok("친구관계 승인 완료");
     }
 
-   /* @GetMapping("/{id}")
-    public ResponseEntity<List<FriendshipResponse>> findFriendshipById(@PathVariable Long id) {
-        return ResponseEntity.ok(friendshipService.findMutualAcceptedFriendships(id));
-    }*/
+    @GetMapping
+    public ResponseEntity<List<FriendshipListResponse>> getFriendship(@RequestParam("userId") User user) {
+        return ResponseEntity.ok(friendshipService.getFriendShip(user.getId()));
+    }
 }

@@ -25,7 +25,6 @@ public class FriendshipResponse {
                 .requestedDate(friendship.getCreatedAt())
                 .build();
     }
-
     public static List<FriendshipResponse> from(List<Friendship> friendships) {
         return friendships.stream()
                 .map(FriendshipResponse::from)
