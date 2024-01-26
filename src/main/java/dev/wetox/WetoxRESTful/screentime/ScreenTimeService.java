@@ -20,7 +20,7 @@ public class ScreenTimeService {
     private final ScreenTimeRepository screenTimeRepository;
 
     @Transactional
-    public ScreenTimeResponse updateScreenTime(Long userId, List<AppScreenTimeRequest> request) {
+    public ScreenTimeResponse updateScreenTime(Long userId, List<CategoryScreenTimeRequest> request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(MemberNotFoundException::new);
         ScreenTime screenTime = ScreenTime.build(user, request);

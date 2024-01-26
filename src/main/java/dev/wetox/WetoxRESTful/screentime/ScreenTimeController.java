@@ -17,7 +17,7 @@ public class ScreenTimeController {
     @PostMapping
     public ResponseEntity<ScreenTimeResponse> updateScreenTime(
             @AuthenticationPrincipal User user,
-            @RequestBody List<AppScreenTimeRequest> request) {
+            @RequestBody List<CategoryScreenTimeRequest> request) {
         return ResponseEntity.ok(screenTimeService.updateScreenTime(user.getId(), request));
     }
 

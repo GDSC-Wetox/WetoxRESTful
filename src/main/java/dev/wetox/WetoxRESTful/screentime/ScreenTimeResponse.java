@@ -17,7 +17,7 @@ public class ScreenTimeResponse {
     private String nickname;
     private LocalDateTime updatedDate;
     private Double totalDuration;
-    private List<AppScreenTimeResponse> appScreenTimes;
+    private List<CategoryScreenTimeResponse> appScreenTimes;
 
     public static ScreenTimeResponse build(User user, ScreenTime screenTime) {
         return ScreenTimeResponse.builder()
@@ -25,8 +25,8 @@ public class ScreenTimeResponse {
                 .updatedDate(screenTime.getUpdatedDate())
                 .totalDuration(screenTime.getTotalDuration())
                 .appScreenTimes(
-                        screenTime.getAppScreenTimes().stream()
-                                .map(AppScreenTimeResponse::new)
+                        screenTime.getCategoryScreenTimes().stream()
+                                .map(CategoryScreenTimeResponse::new)
                                 .toList())
                 .build();
     }
