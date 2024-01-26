@@ -30,4 +30,5 @@ public class FriendshipResponse {
                 .map(FriendshipResponse::from)
                 .collect(toList());
     }
+
 }

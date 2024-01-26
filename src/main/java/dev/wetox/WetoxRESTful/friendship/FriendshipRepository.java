@@ -13,4 +13,6 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
     List<Friendship> findByToIdAndStatus(Long toId, FriendshipStatus status);
 
+
+
 }

@@ -1,5 +1,9 @@
 package dev.wetox.WetoxRESTful.friendship;
 
+import dev.wetox.WetoxRESTful.exception.FriendshipExistException;
+import dev.wetox.WetoxRESTful.exception.FriendshipRequestNotFoundException;
+import dev.wetox.WetoxRESTful.exception.NotRequestMyselfException;
+import dev.wetox.WetoxRESTful.exception.ScreenTimeNotFoundException;
 import dev.wetox.WetoxRESTful.screentime.ScreenTime;
 import dev.wetox.WetoxRESTful.screentime.ScreenTimeRepository;
 import dev.wetox.WetoxRESTful.user.User;
@@ -7,6 +11,8 @@ import dev.wetox.WetoxRESTful.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,21 +35,18 @@ public class FriendshipService {
     @Transactional
     public FriendshipCreateResponse create(Long fromUserId, Long toUserId) {
         if(Objects.equals(fromUserId, toUserId)) {
-            log.error("자기 자신에게 친구 요청을 보낼 수 없습니다.");
-            throw new IllegalStateException("자기 자신에게 친구 요청을 보낼 수 없습니다.");
+            throw new NotRequestMyselfException();
         }
 
         User fromUser = userRepository.findById(fromUserId).orElseThrow(EntityNotFoundException::new);
         User toUser = userRepository.findById(toUserId).orElseThrow(EntityNotFoundException::new);
 
         friendshipRepository.findByToIdAndFromId(toUserId, fromUserId).ifPresent(friendship -> {
-            log.error("이미 친구관계가 존재합니다.");
-            throw new IllegalStateException("이미 친구관계가 존재합니다.");
+            throw new FriendshipExistException();
         });
 
         friendshipRepository.findByToIdAndFromId(fromUserId, toUserId).ifPresent(friendship -> {
-            log.error("이미 친구관계가 존재합니다.");
-            throw new IllegalStateException("이미 친구관계가 존재합니다.");
+            throw new FriendshipExistException();
         });
 
 
@@ -62,17 +65,14 @@ public class FriendshipService {
     @Transactional
     public FriendshipAcceptResponse accept(Long toId, Long fromId) {
         if(Objects.equals(toId, fromId)) {
-            log.error("자기 자신에게 친구 요청을 보낼 수 없습니다.");
-            throw new IllegalStateException("자기 자신에게 친구 요청을 보낼 수 없습니다.");
+            throw new NotRequestMyselfException();
         }
         Friendship friendship = friendshipRepository.findByToIdAndFromId(fromId, toId)
                 .orElseThrow(() -> {
-                    log.error("친구 요청이 존재하지 않습니다.");
-                    return new IllegalStateException("친구 요청이 존재하지 않습니다.");
+                    return new FriendshipRequestNotFoundException();
                 });
         if(friendship.getStatus() == FriendshipStatus.ACCEPT) {
-            log.error("이미 친구관계가 존재합니다.");
-            throw new IllegalStateException("이미 친구관계가 존재합니다.");
+            throw new FriendshipExistException();
         }
         friendship.accept();
 
@@ -90,18 +90,29 @@ public class FriendshipService {
     public List<FriendshipListResponse> getFriendShip(Long userId) {
         List<Friendship> friendShips = friendshipRepository.findByToIdAndStatus(userId, FriendshipStatus.ACCEPT);
         List<FriendshipListResponse> responses = new ArrayList<>();
-        for(Friendship friendship : friendShips) {
-            List<ScreenTime> screenTimes = screenTimeRepository.findScreenTimeByUserId(friendship.getFrom().getId());
-            double totalDuration = screenTimes.stream()
-                    .mapToDouble(ScreenTime::getTotalDuration)
-                    .sum();
+
+        for (Friendship friendship : friendShips) {
+            Page<ScreenTime> screenTimePage
+                    = screenTimeRepository.findLatestByUserId(userId, PageRequest.of(0, 1));
+            List<ScreenTime> screenTimes = screenTimePage.getContent();
+                if (screenTimes.isEmpty()) {
+                    throw new ScreenTimeNotFoundException();
+                }
+
+            ScreenTime latestScreenTime = screenTimes.get(0);
+            double totalDuration = latestScreenTime.getTotalDuration();
 
             responses.add(FriendshipListResponse.builder()
                     .userId(friendship.getFrom().getId())
                     .nickname(friendship.getFrom().getNickname())
                     .totalDuration(totalDuration)
                     .build());
-        }
+
+                }
         return responses;
+    }
+
+    public List<FriendshipResponse> findByToIdAndStatus(Long toId, FriendshipStatus status) {
+        return FriendshipResponse.from(friendshipRepository.findByToIdAndStatus(toId, status));
     }
 }
