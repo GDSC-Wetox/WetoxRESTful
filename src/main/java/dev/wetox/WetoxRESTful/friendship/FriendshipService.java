@@ -60,7 +60,7 @@ public class FriendshipService {
 
     //친구관계 수락
     @Transactional
-    public void accept(Long toId, Long fromId) {
+    public FriendshipAcceptResponse accept(Long toId, Long fromId) {
         if(Objects.equals(toId, fromId)) {
             log.error("자기 자신에게 친구 요청을 보낼 수 없습니다.");
             throw new IllegalStateException("자기 자신에게 친구 요청을 보낼 수 없습니다.");
@@ -82,6 +82,8 @@ public class FriendshipService {
                 .status(FriendshipStatus.ACCEPT)
                 .build();
         friendshipRepository.save(newFriendShip);
+
+        return FriendshipAcceptResponse.from(friendship);
     }
 
     @Transactional(readOnly = true)

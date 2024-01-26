@@ -25,9 +25,9 @@ public class FriendshipController {
     }
 
     @PostMapping("/accept/{toId}")
-    public ResponseEntity<String> acceptFriendship(@AuthenticationPrincipal User user, @PathVariable Long toId) {
-        friendshipService.accept(user.getId(), toId);
-        return ResponseEntity.ok("친구관계 승인 완료");
+    public ResponseEntity<FriendshipAcceptResponse> accept(@AuthenticationPrincipal User user, @PathVariable Long toId) {
+        FriendshipAcceptResponse friendship = friendshipService.accept(user.getId(), toId);
+        return ResponseEntity.ok(friendship);
     }
 
     @GetMapping
