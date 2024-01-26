@@ -1,5 +1,6 @@
 package dev.wetox.WetoxRESTful.auth;
 
+import dev.wetox.WetoxRESTful.user.OAuthProvider;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,5 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterRequest {
     private String nickname;
-//    인증 정보...
+    private OAuthProvider oauthProvider;
+    private String openId;
 }
