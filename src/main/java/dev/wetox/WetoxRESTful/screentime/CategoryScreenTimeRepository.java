@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AppScreenTimeRepository extends JpaRepository<AppScreenTime, Long> {
+public interface CategoryScreenTimeRepository extends JpaRepository<CategoryScreenTime, Long> {
 }
