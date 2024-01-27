@@ -97,12 +97,11 @@ public class FriendshipService {
             Page<ScreenTime> screenTimePage
                     = screenTimeRepository.findLatestByUserId(friendId, PageRequest.of(0, 1));
             List<ScreenTime> screenTimes = screenTimePage.getContent();
-                if (screenTimes.isEmpty()) {
-                    throw new ScreenTimeNotFoundException();
-                }
-
-            ScreenTime latestScreenTime = screenTimes.get(0);
-            double totalDuration = latestScreenTime.getTotalDuration();
+            double totalDuration = 0L;
+            if (!screenTimes.isEmpty()) {
+                ScreenTime latestScreenTime = screenTimes.get(0);
+                totalDuration = latestScreenTime.getTotalDuration();
+            }
 
             responses.add(FriendshipListResponse.builder()
                     .userId(friendship.getFrom().getId())
