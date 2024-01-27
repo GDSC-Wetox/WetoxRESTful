@@ -67,7 +67,7 @@ public class FriendshipService {
         if(Objects.equals(toId, fromId)) {
             throw new NotRequestMyselfException();
         }
-        Friendship friendship = friendshipRepository.findByToIdAndFromId(fromId, toId)
+        Friendship friendship = friendshipRepository.findByToIdAndFromId(toId, fromId)
                 .orElseThrow(() -> {
                     return new FriendshipRequestNotFoundException();
                 });
@@ -86,14 +86,16 @@ public class FriendshipService {
         return FriendshipAcceptResponse.from(friendship);
     }
 
+    //전체 친구 목록 조회
     @Transactional(readOnly = true)
     public List<FriendshipListResponse> getFriendShip(Long userId) {
         List<Friendship> friendShips = friendshipRepository.findByToIdAndStatus(userId, FriendshipStatus.ACCEPT);
         List<FriendshipListResponse> responses = new ArrayList<>();
 
         for (Friendship friendship : friendShips) {
+            Long friendId = friendship.getFrom().getId();
             Page<ScreenTime> screenTimePage
-                    = screenTimeRepository.findLatestByUserId(userId, PageRequest.of(0, 1));
+                    = screenTimeRepository.findLatestByUserId(friendId, PageRequest.of(0, 1));
             List<ScreenTime> screenTimes = screenTimePage.getContent();
                 if (screenTimes.isEmpty()) {
                     throw new ScreenTimeNotFoundException();
@@ -112,6 +114,7 @@ public class FriendshipService {
         return responses;
     }
 
+    //나에게 친구요청을 보낸 친구목록
     public List<FriendshipResponse> findByToIdAndStatus(Long toId, FriendshipStatus status) {
         return FriendshipResponse.from(friendshipRepository.findByToIdAndStatus(toId, status));
     }
