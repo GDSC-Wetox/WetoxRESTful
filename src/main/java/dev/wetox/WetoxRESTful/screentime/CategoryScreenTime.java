@@ -23,7 +23,7 @@ public class CategoryScreenTime {
     @Enumerated(STRING)
     private Category category;
 
-    private Double duration;
+    private Long duration;
 
     public static CategoryScreenTime build(ScreenTime screenTime, CategoryScreenTimeRequest categoryScreenTimeRequest) {
         CategoryScreenTime categoryScreenTime = new CategoryScreenTime();

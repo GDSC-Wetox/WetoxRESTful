@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryScreenTimeRequest {
     private Category category;
-    private Double duration;
+    private Long duration;
 }

@@ -1,7 +1,6 @@
 package dev.wetox.WetoxRESTful.screentime;
 
 import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
-import dev.wetox.WetoxRESTful.exception.ScreenTimeNotFoundException;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ public class ScreenTimeService {
                 = screenTimeRepository.findLatestByUserId(userId, PageRequest.of(0, 1));
         List<ScreenTime> screenTimes = screenTimePage.getContent();
         if (screenTimes.isEmpty()) {
-            throw new ScreenTimeNotFoundException();
+            return ScreenTimeResponse.build(user, new ScreenTime());
         }
         return ScreenTimeResponse.build(user, screenTimes.get(0));
     }
