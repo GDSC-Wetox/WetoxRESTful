@@ -16,7 +16,7 @@ import java.util.List;
 public class ScreenTimeResponse {
     private String nickname;
     private LocalDateTime updatedDate;
-    private Double totalDuration;
+    private Long totalDuration;
     private List<CategoryScreenTimeResponse> categoryScreenTimes;
 
     public static ScreenTimeResponse build(User user, ScreenTime screenTime) {

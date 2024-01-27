@@ -27,7 +27,7 @@ public class ScreenTime {
 
     private LocalDateTime updatedDate;
 
-    private Double totalDuration = 0.0;
+    private Long totalDuration = 0L;
 
     @OneToMany(mappedBy = "screenTime", cascade = ALL)
     private List<CategoryScreenTime> categoryScreenTimes = new ArrayList<>();
@@ -40,7 +40,7 @@ public class ScreenTime {
             screenTime.categoryScreenTimes.add(CategoryScreenTime.build(screenTime, categoryScreenTime));
         }
         screenTime.totalDuration = screenTime.categoryScreenTimes.stream()
-                .mapToDouble(CategoryScreenTime::getDuration)
+                .mapToLong(CategoryScreenTime::getDuration)
                 .sum();
         return screenTime;
     }

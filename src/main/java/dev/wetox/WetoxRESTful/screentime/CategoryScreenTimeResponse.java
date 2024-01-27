@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryScreenTimeResponse {
     private Category category;
-    private Double duration;
+    private Long duration;
 
     public CategoryScreenTimeResponse(CategoryScreenTime categoryScreenTime) {
         this.category = categoryScreenTime.getCategory();
