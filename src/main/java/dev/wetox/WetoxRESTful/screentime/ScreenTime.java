@@ -27,7 +27,7 @@ public class ScreenTime {
 
     private LocalDateTime updatedDate;
 
-    private Double totalDuration;
+    private Double totalDuration = 0.0;
 
     @OneToMany(mappedBy = "screenTime", cascade = ALL)
     private List<CategoryScreenTime> categoryScreenTimes = new ArrayList<>();

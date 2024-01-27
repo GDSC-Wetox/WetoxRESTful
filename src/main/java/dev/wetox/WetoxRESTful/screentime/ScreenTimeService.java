@@ -35,7 +35,8 @@ public class ScreenTimeService {
                 = screenTimeRepository.findLatestByUserId(userId, PageRequest.of(0, 1));
         List<ScreenTime> screenTimes = screenTimePage.getContent();
         if (screenTimes.isEmpty()) {
-            throw new ScreenTimeNotFoundException();
+//            throw new ScreenTimeNotFoundException();
+            return ScreenTimeResponse.build(user, new ScreenTime());
         }
         return ScreenTimeResponse.build(user, screenTimes.get(0));
     }
