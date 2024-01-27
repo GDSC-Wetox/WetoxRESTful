@@ -3,7 +3,6 @@ package dev.wetox.WetoxRESTful.friendship;
 import dev.wetox.WetoxRESTful.exception.FriendshipExistException;
 import dev.wetox.WetoxRESTful.exception.FriendshipRequestNotFoundException;
 import dev.wetox.WetoxRESTful.exception.NotRequestMyselfException;
-import dev.wetox.WetoxRESTful.exception.ScreenTimeNotFoundException;
 import dev.wetox.WetoxRESTful.screentime.ScreenTime;
 import dev.wetox.WetoxRESTful.screentime.ScreenTimeRepository;
 import dev.wetox.WetoxRESTful.user.User;
@@ -97,7 +96,7 @@ public class FriendshipService {
             Page<ScreenTime> screenTimePage
                     = screenTimeRepository.findLatestByUserId(friendId, PageRequest.of(0, 1));
             List<ScreenTime> screenTimes = screenTimePage.getContent();
-            double totalDuration = 0L;
+            Long totalDuration = 0L;
             if (!screenTimes.isEmpty()) {
                 ScreenTime latestScreenTime = screenTimes.get(0);
                 totalDuration = latestScreenTime.getTotalDuration();
