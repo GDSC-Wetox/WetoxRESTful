@@ -12,7 +12,7 @@ public class FriendshipListResponse {
 
     private Long userId;
     private String nickname;
-    private Double totalDuration;
+    private Long totalDuration;
 
 
 }
