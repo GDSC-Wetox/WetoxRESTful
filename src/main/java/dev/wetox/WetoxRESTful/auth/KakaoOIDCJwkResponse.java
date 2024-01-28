@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationRequest {
-    private String nickname;
-//    인증 정보...
+public class KakaoOIDCJwkResponse {
+    private String kid;
+    private String kty;
+    private String alg;
+    private String use;
+    private String n;
+    private String e;
 }

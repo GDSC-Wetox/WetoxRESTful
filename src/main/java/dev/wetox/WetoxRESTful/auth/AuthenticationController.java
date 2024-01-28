@@ -1,9 +1,11 @@
 package dev.wetox.WetoxRESTful.auth;
 
+import dev.wetox.WetoxRESTful.user.OAuthProvider;
 import dev.wetox.WetoxRESTful.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/auth")
@@ -15,16 +17,28 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
-    ) {
-        return ResponseEntity.ok(authenticationService.register(request));
+            @RequestParam("nickname") String nickname,
+            @RequestParam("oauthProvider") OAuthProvider oauthProvider,
+            @RequestParam("openId") String openId,
+            @RequestParam("profileImage") MultipartFile profileImage
+            ) {
+        return ResponseEntity.ok(authenticationService.register(
+                nickname,
+                oauthProvider,
+                openId,
+                profileImage
+        ));
     }
 
     @PostMapping("/token")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestParam OAuthProvider oauthProvider,
+            @RequestParam String openId
     ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.ok(authenticationService.authenticate(
+                oauthProvider,
+                openId
+        ));
     }
 
     @GetMapping("/valid")
