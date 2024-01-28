@@ -27,20 +27,20 @@ public class ScreenTime {
 
     private LocalDateTime updatedDate;
 
-    private Double totalDuration;
+    private Long totalDuration = 0L;
 
     @OneToMany(mappedBy = "screenTime", cascade = ALL)
-    private List<AppScreenTime> appScreenTimes = new ArrayList<>();
+    private List<CategoryScreenTime> categoryScreenTimes = new ArrayList<>();
 
-    public static ScreenTime build(User user, List<AppScreenTimeRequest> appScreenTimes) {
+    public static ScreenTime build(User user, List<CategoryScreenTimeRequest> categoryScreenTimes) {
         ScreenTime screenTime = new ScreenTime();
         screenTime.user = user;
         screenTime.updatedDate = LocalDateTime.now();
-        for (AppScreenTimeRequest appScreenTime: appScreenTimes) {
-            screenTime.appScreenTimes.add(AppScreenTime.build(screenTime, appScreenTime));
+        for (CategoryScreenTimeRequest categoryScreenTime: categoryScreenTimes) {
+            screenTime.categoryScreenTimes.add(CategoryScreenTime.build(screenTime, categoryScreenTime));
         }
-        screenTime.totalDuration = screenTime.appScreenTimes.stream()
-                .mapToDouble(AppScreenTime::getDuration)
+        screenTime.totalDuration = screenTime.categoryScreenTimes.stream()
+                .mapToLong(CategoryScreenTime::getDuration)
                 .sum();
         return screenTime;
     }

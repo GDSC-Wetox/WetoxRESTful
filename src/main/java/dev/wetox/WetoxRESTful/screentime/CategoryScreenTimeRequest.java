@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppScreenTimeRequest {
-    private String name;
-    private String category;
-    private Double duration;
+public class CategoryScreenTimeRequest {
+    private Category category;
+    private Long duration;
 }

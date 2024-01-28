@@ -16,17 +16,17 @@ import java.util.List;
 public class ScreenTimeResponse {
     private String nickname;
     private LocalDateTime updatedDate;
-    private Double totalDuration;
-    private List<AppScreenTimeResponse> appScreenTimes;
+    private Long totalDuration;
+    private List<CategoryScreenTimeResponse> categoryScreenTimes;
 
     public static ScreenTimeResponse build(User user, ScreenTime screenTime) {
         return ScreenTimeResponse.builder()
                 .nickname(user.getNickname())
                 .updatedDate(screenTime.getUpdatedDate())
                 .totalDuration(screenTime.getTotalDuration())
-                .appScreenTimes(
-                        screenTime.getAppScreenTimes().stream()
-                                .map(AppScreenTimeResponse::new)
+                .categoryScreenTimes(
+                        screenTime.getCategoryScreenTimes().stream()
+                                .map(CategoryScreenTimeResponse::new)
                                 .toList())
                 .build();
     }
