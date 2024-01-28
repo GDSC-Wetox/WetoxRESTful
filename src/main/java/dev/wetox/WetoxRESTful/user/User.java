@@ -34,7 +34,7 @@ public class User implements UserDetails {
 
     @Enumerated(STRING)
     private OAuthProvider oauthProvider;
-    private String oauthId;
+    private String oauthSubject;
 
     @OneToMany(mappedBy = "user")
     private List<UserBadge> rewards = new ArrayList<>();
