@@ -1,16 +1,13 @@
 package dev.wetox.WetoxRESTful.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.wetox.WetoxRESTful.exception.OIDCInvalidHeaderException;
 import dev.wetox.WetoxRESTful.exception.OIDCInvalidPublicKeyIdException;
 import dev.wetox.WetoxRESTful.exception.OIDCValidationFailException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.math.BigInteger;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
@@ -24,11 +21,25 @@ public class KakaoOIDCService {
     private Map<String, PublicKey> publicKeys = new HashMap<>();
 
     public String extractSubject(String openId) {
-        PublicKey publicKey = getPublicKey(openId);
-        String subject = null;
         try {
-            subject = Jwts.parser()
-                    .verifyWith(publicKey)
+            return Jwts.parser()
+                    .keyLocator(new LocatorAdapter<Key>() {
+                        @Override
+                        protected Key locate(ProtectedHeader header) {
+                            String keyId = header.getKeyId();
+                            PublicKey publicKey = publicKeys.get(keyId);
+                            if (publicKey == null) {
+                                generatePublicKeys();
+                                publicKey = publicKeys.get(keyId);
+                                if(publicKey == null) {
+                                    throw new OIDCInvalidPublicKeyIdException();
+                                }
+                            }
+                            return publicKey;
+                        }
+                    })
+                    .requireIssuer("https://kauth.kakao.com")
+                    .requireAudience("6cd6251287f6ca88346f4d50466956a2")
                     .build()
                     .parseSignedClaims(openId)
                     .getPayload()
@@ -36,20 +47,6 @@ public class KakaoOIDCService {
         } catch (JwtException e) {
             throw new OIDCValidationFailException();
         }
-        return subject;
-    }
-
-    private PublicKey getPublicKey(String openId) {
-        String kid = extractKeyId(openId);
-        PublicKey publicKey = publicKeys.get(kid);
-        if (publicKey == null) { // kid 공개키가 존재하지 않는다면 공개키 리스트를 업데이트
-            generatePublicKeys();
-            publicKey = publicKeys.get(kid); // kid 공개키 탐색 재시도
-        }
-        if(publicKey == null) { // kid 공개키가 이번에도 존재하지 않는다면 잘못된 kid라 판정
-            throw new OIDCInvalidPublicKeyIdException();
-        }
-        return publicKey;
     }
 
     private void generatePublicKeys() {
@@ -60,7 +57,8 @@ public class KakaoOIDCService {
 
     private List<KakaoOIDCJwkResponse> requestJwks() {
         RestTemplate restTemplate = new RestTemplate();
-        KakaoOIDCJwksResponse response = restTemplate.getForObject("https://kauth.kakao.com/.well-known/jwks.json", KakaoOIDCJwksResponse.class);
+        KakaoOIDCJwksResponse response = restTemplate
+                .getForObject("https://kauth.kakao.com/.well-known/jwks.json", KakaoOIDCJwksResponse.class);
         return response.getKeys();
     }
 
@@ -76,20 +74,6 @@ public class KakaoOIDCService {
         }
     }
 
-    private String extractKeyId(String openId) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String[] split = openId.split("\\.");
-        String headerBase64Encoded = split[0];
-        byte[] header = Base64.getDecoder().decode(headerBase64Encoded);
-        KakaoOIDCHeaderResponse headerResponse = null;
-        try {
-            headerResponse = objectMapper.readValue(header, KakaoOIDCHeaderResponse.class);
-        } catch (IOException e) {
-            throw new OIDCInvalidHeaderException();
-        }
-        return headerResponse.getKid();
-    }
-
     private BigInteger decodeBase64urlUint(String base64urlUintEncoded) {
         String padded = base64urlUintEncoded.length() % 4 == 0 ?
                 base64urlUintEncoded :
@@ -98,5 +82,4 @@ public class KakaoOIDCService {
         byte[] decoded = Base64.getDecoder().decode(base64Encoded);
         return new BigInteger(1, decoded);
     }
-
 }
