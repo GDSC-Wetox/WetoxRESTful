@@ -1,6 +1,7 @@
 package dev.wetox.WetoxRESTful.auth;
 
 import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
+import dev.wetox.WetoxRESTful.exception.UserRegisterDuplicateException;
 import dev.wetox.WetoxRESTful.jwt.JwtService;
 import dev.wetox.WetoxRESTful.user.OAuthProvider;
 import dev.wetox.WetoxRESTful.user.User;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 import static dev.wetox.WetoxRESTful.user.Role.USER;
 
@@ -30,6 +33,12 @@ public class AuthenticationService {
     @Transactional
     public AuthenticationResponse register(String nickname, OAuthProvider oauthProvider, String openId, MultipartFile profileImage) {
         String subject = kakaoOIDCService.extractSubject(openId);
+
+        if (userRepository
+                .findByOauthProviderAndOauthSubject(oauthProvider, subject)
+                .isPresent()) {
+            throw new UserRegisterDuplicateException();
+        }
 
         User user = User.builder()
                 .nickname(nickname)

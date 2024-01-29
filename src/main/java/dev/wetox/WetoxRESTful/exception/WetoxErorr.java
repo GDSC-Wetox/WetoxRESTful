@@ -17,6 +17,8 @@ public enum WetoxErorr {
     OIDC_INVALID_HEADER("OIDC 헤더를 인식할 수 없습니다.", BAD_REQUEST),
     OIDC_INVALID_PUBLIC_ID("OIDC 공개키 아이디를 인식할 수 없습니다.", BAD_REQUEST),
 
+    USER_REGISTER_DUPLICATE("이미 등록된 사용자입니다.", BAD_REQUEST),
+
     FRIENDSHIP_EXIST("이미 친구관계가 존재합니다.", BAD_REQUEST),
     FRIENDSHIP_REQUEST_NOT_FOUND("친구 요청이 존재하지 않습니다.", NOT_FOUND),
     NOT_REQUEST_MYSELF("자기 자신에게 친구 요청을 보낼 수 없습니다.", BAD_REQUEST),
