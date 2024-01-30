@@ -12,6 +12,13 @@ spring:
       hibernate:
         format_sql: true
 
+  cloud:
+    gcp:
+      credentials:
+        default-scopes: ${GOOGLE_APPLICATION_CREDENTIALS}
+      storage:
+        project-id: ${GOOGLE_PROJECT_ID}
+
 logging:
   level:
     org.hibernate.SQL: debug

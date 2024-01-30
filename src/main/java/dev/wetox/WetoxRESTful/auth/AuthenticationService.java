@@ -2,6 +2,7 @@ package dev.wetox.WetoxRESTful.auth;
 
 import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
 import dev.wetox.WetoxRESTful.exception.UserRegisterDuplicateException;
+import dev.wetox.WetoxRESTful.image.ImageService;
 import dev.wetox.WetoxRESTful.jwt.JwtService;
 import dev.wetox.WetoxRESTful.user.OAuthProvider;
 import dev.wetox.WetoxRESTful.user.User;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-
 import static dev.wetox.WetoxRESTful.user.Role.USER;
 
 @Service
@@ -27,6 +26,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final KakaoOIDCService kakaoOIDCService;
+    private final ImageService imageService;
 
     private static final String password = "wetokWkdWkd";
     
@@ -40,12 +40,15 @@ public class AuthenticationService {
             throw new UserRegisterDuplicateException();
         }
 
+        String imageUUID = imageService.uploadImage(profileImage);
+
         User user = User.builder()
                 .nickname(nickname)
                 .role(USER)
                 .password(passwordEncoder.encode(password))
                 .oauthSubject(subject)
                 .oauthProvider(oauthProvider)
+                .profileImageUUID(imageUUID)
                 .build();
         userRepository.save(user);
         String jwt = jwtService.generateToken(user);

@@ -23,6 +23,8 @@ public enum WetoxErorr {
     FRIENDSHIP_REQUEST_NOT_FOUND("친구 요청이 존재하지 않습니다.", NOT_FOUND),
     NOT_REQUEST_MYSELF("자기 자신에게 친구 요청을 보낼 수 없습니다.", BAD_REQUEST),
 
+    PROFILE_IMAGE_IO("프로필 이미지를 읽을 수 없습니다.", BAD_REQUEST),
+
     ;
 
     private final String message;
