@@ -3,6 +3,7 @@ package dev.wetox.WetoxRESTful.friendship;
 import dev.wetox.WetoxRESTful.exception.FriendshipExistException;
 import dev.wetox.WetoxRESTful.exception.FriendshipRequestNotFoundException;
 import dev.wetox.WetoxRESTful.exception.NotRequestMyselfException;
+import dev.wetox.WetoxRESTful.image.ImageService;
 import dev.wetox.WetoxRESTful.screentime.ScreenTime;
 import dev.wetox.WetoxRESTful.screentime.ScreenTimeRepository;
 import dev.wetox.WetoxRESTful.user.User;
@@ -29,6 +30,7 @@ public class FriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
     private final ScreenTimeRepository screenTimeRepository;
+    private final ImageService imageService;
 
     //친구 관계 요청
     @Transactional
@@ -106,9 +108,10 @@ public class FriendshipService {
                     .userId(friendship.getFrom().getId())
                     .nickname(friendship.getFrom().getNickname())
                     .totalDuration(totalDuration)
+                    .profileImage(imageService.getImageUrl(friendship.getFrom().getProfileImageUUID()))
                     .build());
 
-                }
+        }
         return responses;
     }
 

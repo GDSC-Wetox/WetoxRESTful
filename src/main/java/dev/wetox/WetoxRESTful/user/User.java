@@ -36,6 +36,8 @@ public class User implements UserDetails {
     private OAuthProvider oauthProvider;
     private String oauthSubject;
 
+    private String profileImageUUID;
+
     @OneToMany(mappedBy = "user")
     private List<UserBadge> rewards = new ArrayList<>();
 

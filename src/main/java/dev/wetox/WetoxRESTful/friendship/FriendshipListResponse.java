@@ -13,6 +13,5 @@ public class FriendshipListResponse {
     private Long userId;
     private String nickname;
     private Long totalDuration;
-
-
+    private String profileImage;
 }
