@@ -1,6 +1,7 @@
 package dev.wetox.WetoxRESTful.friendship;
 
 import dev.wetox.WetoxRESTful.user.User;
+import dev.wetox.WetoxRESTful.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class FriendshipController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<FriendshipListResponse>> getFriendship(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<UserResponse>> getFriendship(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(friendshipService.getFriendShip(user.getId()));
     }
 

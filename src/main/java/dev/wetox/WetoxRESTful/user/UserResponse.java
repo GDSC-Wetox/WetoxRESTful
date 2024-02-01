@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class UserResponse {
     private Long userId;
     private String nickname;
+    private Long totalDuration;
     private String profileImage;
 }
