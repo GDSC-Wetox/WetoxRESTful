@@ -32,7 +32,7 @@ public class FriendshipController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<FriendshipListResponse>> getFriendship(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<UserResponse>> getFriendship(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(friendshipService.getFriendShip(user.getId()));
     }
 

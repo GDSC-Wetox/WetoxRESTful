@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
-    private Long userId;
+public class UserNicknameRequest {
     private String nickname;
-    private Long totalDuration;
-    private String profileImage;
 }
