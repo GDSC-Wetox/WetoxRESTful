@@ -130,7 +130,8 @@ public class FriendshipService {
         List<User> users = userRepository.findByNicknameContain(nickname);
 
         return users.stream()
-                .map(user -> userService.retrieveProfile(user.getId()))
-                .collect(Collectors.toList());
+                .map(User::getId)
+                .map(userService::retrieveProfile)
+                .toList();
     }
 }
