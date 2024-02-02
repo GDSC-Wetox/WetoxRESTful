@@ -16,4 +16,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.nickname LIKE %:nickname%")
     List<User> findByNicknameContain(@Param("nickname") String nickname);
+
 }

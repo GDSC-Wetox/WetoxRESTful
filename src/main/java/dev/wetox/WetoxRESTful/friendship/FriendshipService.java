@@ -9,6 +9,7 @@ import dev.wetox.WetoxRESTful.screentime.ScreenTimeRepository;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserRepository;
 import dev.wetox.WetoxRESTful.user.UserResponse;
+import dev.wetox.WetoxRESTful.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class FriendshipService {
     private final UserRepository userRepository;
     private final ScreenTimeRepository screenTimeRepository;
     private final ImageService imageService;
+    private final UserService userService;
 
     //친구 관계 요청
     @Transactional
@@ -128,11 +130,7 @@ public class FriendshipService {
         List<User> users = userRepository.findByNicknameContain(nickname);
 
         return users.stream()
-                .map(user -> UserResponse.builder()
-                        .userId(user.getId())
-                        .nickname(user.getNickname())
-                        .profileImage(user.getProfileImageUUID())
-                        .build())
+                .map(user -> userService.retrieveProfile(user.getId()))
                 .collect(Collectors.toList());
     }
 }

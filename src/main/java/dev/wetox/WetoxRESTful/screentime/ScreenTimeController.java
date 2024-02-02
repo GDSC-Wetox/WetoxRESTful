@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -26,5 +25,12 @@ public class ScreenTimeController {
             @PathVariable Long userId
     ) {
         return ResponseEntity.ok(screenTimeService.retrieveScreenTime(userId));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ScreenTimeResponse> retrieveAuthenticatedUserScreenTime(
+            @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok(screenTimeService.retrieveScreenTime(user.getId()));
     }
 }
