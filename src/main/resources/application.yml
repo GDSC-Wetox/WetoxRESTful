@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: ${MY_SQL_DEMO}
+    username: ${MY_SQL_DEMO_USER}
+    password: ${MY_SQL_DEMO_PASSWD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
