@@ -1,7 +1,6 @@
 package dev.wetox.WetoxRESTful.auth;
 
-import dev.wetox.WetoxRESTful.user.OAuthProvider;
-import dev.wetox.WetoxRESTful.user.UserRepository;
+import dev.wetox.WetoxRESTful.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
     private UserRepository userRepository;
 
@@ -44,5 +44,12 @@ public class AuthenticationController {
     @GetMapping("/valid")
     public ResponseEntity<String> valid() {
         return ResponseEntity.ok("OK");
+    }
+
+    @GetMapping("/valid/nickname")
+    public ResponseEntity<UserDuplicatedConfirmResponse> checkNicknameDuplicated(
+            @RequestBody UserDuplicatedConfirmRequest request
+    ) {
+        return ResponseEntity.ok(userService.checkNicknameDuplicated(request.getNickname()));
     }
 }
