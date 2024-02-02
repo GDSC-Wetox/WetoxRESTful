@@ -8,6 +8,7 @@ import dev.wetox.WetoxRESTful.screentime.ScreenTime;
 import dev.wetox.WetoxRESTful.screentime.ScreenTimeRepository;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserRepository;
+import dev.wetox.WetoxRESTful.user.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class FriendshipService {
     //친구 관계 요청
     @Transactional
     public FriendshipCreateResponse create(Long fromUserId, Long toUserId) {
-        if(Objects.equals(fromUserId, toUserId)) {
+        if (Objects.equals(fromUserId, toUserId)) {
             throw new NotRequestMyselfException();
         }
 
@@ -65,14 +68,14 @@ public class FriendshipService {
     //친구관계 수락
     @Transactional
     public FriendshipAcceptResponse accept(Long toId, Long fromId) {
-        if(Objects.equals(toId, fromId)) {
+        if (Objects.equals(toId, fromId)) {
             throw new NotRequestMyselfException();
         }
         Friendship friendship = friendshipRepository.findByToIdAndFromId(toId, fromId)
                 .orElseThrow(() -> {
                     return new FriendshipRequestNotFoundException();
                 });
-        if(friendship.getStatus() == FriendshipStatus.ACCEPT) {
+        if (friendship.getStatus() == FriendshipStatus.ACCEPT) {
             throw new FriendshipExistException();
         }
         friendship.accept();
@@ -118,5 +121,18 @@ public class FriendshipService {
     //나에게 친구요청을 보낸 친구목록
     public List<FriendshipResponse> findByToIdAndStatus(Long toId, FriendshipStatus status) {
         return FriendshipResponse.from(friendshipRepository.findByToIdAndStatus(toId, status));
+    }
+
+    //닉네임으로 친구 검색
+    public List<UserResponse> searchFriendsByNickname(String nickname) {
+        List<User> users = userRepository.findByNicknameContain(nickname);
+
+        return users.stream()
+                .map(user -> UserResponse.builder()
+                        .userId(user.getId())
+                        .nickname(user.getNickname())
+                        .profileImage(user.getProfileImageUUID())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
