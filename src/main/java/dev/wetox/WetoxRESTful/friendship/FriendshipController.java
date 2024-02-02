@@ -40,9 +40,4 @@ public class FriendshipController {
     public ResponseEntity<List<FriendshipResponse>> findFriendshipRequestById(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(friendshipService.findByToIdAndStatus(user.getId(), FriendshipStatus.REQUEST));
     }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<UserResponse>> searchFriendsByNickname(@RequestParam String nickname) {
-        return ResponseEntity.ok(friendshipService.searchFriendsByNickname(nickname));
-    }
 }

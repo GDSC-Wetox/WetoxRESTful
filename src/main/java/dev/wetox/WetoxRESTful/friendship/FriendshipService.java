@@ -124,14 +124,4 @@ public class FriendshipService {
     public List<FriendshipResponse> findByToIdAndStatus(Long toId, FriendshipStatus status) {
         return FriendshipResponse.from(friendshipRepository.findByToIdAndStatus(toId, status));
     }
-
-    //닉네임으로 친구 검색
-    public List<UserResponse> searchFriendsByNickname(String nickname) {
-        List<User> users = userRepository.findByNicknameContain(nickname);
-
-        return users.stream()
-                .map(User::getId)
-                .map(userService::retrieveProfile)
-                .toList();
-    }
 }
