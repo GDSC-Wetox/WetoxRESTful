@@ -48,7 +48,7 @@ public class AuthenticationController {
 
     @GetMapping("/valid/nickname")
     public ResponseEntity<UserDuplicatedConfirmResponse> checkNicknameDuplicated(
-            @RequestBody UserDuplicatedConfirmRequest request
+            @RequestBody UserNicknameRequest request
     ) {
         return ResponseEntity.ok(userService.checkNicknameDuplicated(request.getNickname()));
     }

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDuplicatedConfirmRequest {
+public class UserNicknameRequest {
     private String nickname;
 }
