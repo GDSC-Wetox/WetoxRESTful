@@ -2,6 +2,8 @@ package dev.wetox.WetoxRESTful.user;
 
 import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
 import dev.wetox.WetoxRESTful.image.ImageService;
+import dev.wetox.WetoxRESTful.screentime.ScreenTimeResponse;
+import dev.wetox.WetoxRESTful.screentime.ScreenTimeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,16 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final ImageService imageService;
+    private final ScreenTimeService screenTimeService;
 
     public UserResponse retrieveProfile(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        ScreenTimeResponse screenTime = screenTimeService.retrieveScreenTime(userId);
         return UserResponse.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileImage(imageService.getImageUrl(user.getProfileImageUUID()))
+                .totalDuration(screenTime.getTotalDuration())
                 .build();
     }
 
