@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserResponse>> ser(
+    public ResponseEntity<List<UserResponse>> searchByNickname(
             @RequestBody UserNicknameRequest request
     ) {
         return ResponseEntity.ok(userService.searchFriendsByNickname(request.getNickname()));
