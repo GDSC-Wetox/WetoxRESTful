@@ -1,6 +1,6 @@
 package dev.wetox.WetoxRESTful.auth;
 
-import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
+import dev.wetox.WetoxRESTful.exception.UserNotFoundException;
 import dev.wetox.WetoxRESTful.exception.UserRegisterDuplicateException;
 import dev.wetox.WetoxRESTful.image.ImageService;
 import dev.wetox.WetoxRESTful.jwt.JwtService;
@@ -60,7 +60,7 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(OAuthProvider oAuthProvider, String openId) {
         String subject = kakaoOIDCService.extractSubject(openId);
         User user = userRepository.findByOauthProviderAndOauthSubject(oAuthProvider, subject)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

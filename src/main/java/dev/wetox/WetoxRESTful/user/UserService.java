@@ -1,6 +1,6 @@
 package dev.wetox.WetoxRESTful.user;
 
-import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
+import dev.wetox.WetoxRESTful.exception.UserNotFoundException;
 import dev.wetox.WetoxRESTful.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class UserService {
     private final ImageService imageService;
 
     public UserResponse retrieveProfile(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         return UserResponse.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
