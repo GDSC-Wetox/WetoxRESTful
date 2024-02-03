@@ -1,6 +1,6 @@
 package dev.wetox.WetoxRESTful.user;
 
-import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
+import dev.wetox.WetoxRESTful.exception.UserNotFoundException;
 import dev.wetox.WetoxRESTful.image.ImageService;
 import dev.wetox.WetoxRESTful.screentime.ScreenTimeResponse;
 import dev.wetox.WetoxRESTful.screentime.ScreenTimeService;
@@ -23,7 +23,7 @@ public class UserService {
     private final ScreenTimeService screenTimeService;
 
     public UserResponse retrieveProfile(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         ScreenTimeResponse screenTime = screenTimeService.retrieveScreenTime(userId);
         return UserResponse.builder()
                 .userId(user.getId())

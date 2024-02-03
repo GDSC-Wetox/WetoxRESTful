@@ -1,6 +1,6 @@
 package dev.wetox.WetoxRESTful.badge;
 
-import dev.wetox.WetoxRESTful.exception.MemberNotFoundException;
+import dev.wetox.WetoxRESTful.exception.UserNotFoundException;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class BadgeService {
     private final UserBadgeRepository userBadgeRepository;
 
     public List<BadgeResponse> listRewardedBadge(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<Badge> rewardedBadges = userBadgeRepository.findAllByUser(user).stream()
                 .map(UserBadge::getBadge)
                 .toList();
@@ -38,7 +38,7 @@ public class BadgeService {
 
     @Transactional
     public List<BadgeResponse> updateBadge(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<Badge> rewardedBadges = userBadgeRepository.findAllByUser(user).stream()
                 .map(UserBadge::getBadge)
                 .toList();
