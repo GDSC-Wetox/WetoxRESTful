@@ -40,5 +40,4 @@ public class FriendshipController {
     public ResponseEntity<List<FriendshipResponse>> findFriendshipRequestById(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(friendshipService.findByToIdAndStatus(user.getId(), FriendshipStatus.REQUEST));
     }
-
 }
