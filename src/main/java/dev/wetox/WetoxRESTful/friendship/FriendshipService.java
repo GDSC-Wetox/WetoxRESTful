@@ -54,6 +54,8 @@ public class FriendshipService {
 
         friendshipRepository.save(friendshipFrom);
 
+        // todo: toUser에게 친구 신청이 도착했다는 푸시 알림
+
         return FriendshipCreateResponse.from(friendshipFrom);
     }
 
