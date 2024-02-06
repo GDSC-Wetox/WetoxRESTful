@@ -38,6 +38,8 @@ public class User implements UserDetails {
 
     private String profileImageUUID;
 
+    private String deviceToken;
+
     @OneToMany(mappedBy = "user")
     private List<UserBadge> rewards = new ArrayList<>();
 
