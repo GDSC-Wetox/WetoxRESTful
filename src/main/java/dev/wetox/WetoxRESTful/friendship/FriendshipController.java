@@ -1,5 +1,6 @@
 package dev.wetox.WetoxRESTful.friendship;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class FriendshipController {
     private final FriendshipService friendshipService;
 
     @PostMapping("/request/{toId}")
-    public ResponseEntity<FriendshipCreateResponse> create(@AuthenticationPrincipal User user, @PathVariable Long toId) {
+    public ResponseEntity<FriendshipCreateResponse> create(@AuthenticationPrincipal User user, @PathVariable Long toId) throws FirebaseMessagingException {
         FriendshipCreateResponse friendship = friendshipService.create(user.getId(), toId);
         return ResponseEntity.ok(friendship);
     }

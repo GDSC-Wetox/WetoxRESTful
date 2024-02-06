@@ -31,7 +31,13 @@ public class AuthenticationService {
     private static final String password = "wetokWkdWkd";
     
     @Transactional
-    public AuthenticationResponse register(String nickname, OAuthProvider oauthProvider, String openId, MultipartFile profileImage) {
+    public AuthenticationResponse register(
+            String nickname,
+            OAuthProvider oauthProvider,
+            String openId,
+            String deviceToken,
+            MultipartFile profileImage
+    ) {
         String subject = kakaoOIDCService.extractSubject(openId);
 
         if (userRepository
@@ -49,6 +55,7 @@ public class AuthenticationService {
                 .oauthSubject(subject)
                 .oauthProvider(oauthProvider)
                 .profileImageUUID(imageUUID)
+                .deviceToken(deviceToken)
                 .build();
         userRepository.save(user);
         String jwt = jwtService.generateToken(user);
