@@ -20,7 +20,7 @@ public class AuthenticationController {
             @RequestParam("nickname") String nickname,
             @RequestParam("oauthProvider") OAuthProvider oauthProvider,
             @RequestParam("openId") String openId,
-            @RequestParam("") String deviceToken,
+            @RequestParam("deviceToken") String deviceToken,
             @RequestParam("profileImage") MultipartFile profileImage
             ) {
         return ResponseEntity.ok(authenticationService.register(
