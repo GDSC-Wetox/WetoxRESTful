@@ -61,8 +61,8 @@ public class FriendshipService {
 
         // todo: toUser에게 친구 신청이 도착했다는 푸시 알림
         Notification notification = Notification.builder()
-                .setTitle(fromUser.getNickname() + "님의 친구 신청")
-                .setBody("그렇다고 합니다...")
+                .setTitle(fromUser.getNickname() + "님의 친구 신청이 도착했습니다.")
+                .setBody("Wetox에서 확인해보세요.")
                 .build();
         Message message = Message.builder()
                 .setToken(fromUser.getDeviceToken())
