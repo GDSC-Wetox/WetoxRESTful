@@ -29,9 +29,9 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserResponse>> searchByNickname(
+    public ResponseEntity<UserResponse> searchByNickname(
             @RequestBody UserNicknameRequest request
     ) {
-        return ResponseEntity.ok(userService.searchFriendsByNickname(request.getNickname()));
+        return ResponseEntity.ok(userService.retrieveProfileByNickname(request.getNickname()));
     }
 }
