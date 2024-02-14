@@ -38,14 +38,14 @@ public class UserService {
         return UserDuplicatedConfirmResponse.build(user.isPresent());
     }
 
-    public List<UserResponse> searchFriendsByNickname(String nickname) {
-        List<User> users = userRepository.findByNicknameContain(nickname);
-
-        log.info(nickname);
-
-        return users.stream()
-                .map(User::getId)
-                .map(this::retrieveProfile)
-                .collect(Collectors.toList());
+    public UserResponse retrieveProfileByNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
+        ScreenTimeResponse screenTime = screenTimeService.retrieveScreenTime(user.getId());
+        return UserResponse.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profileImage(imageService.getImageUrl(user.getProfileImageUUID()))
+                .totalDuration(screenTime.getTotalDuration())
+                .build();
     }
 }
