@@ -28,10 +28,10 @@ public class UserController {
         return ResponseEntity.ok(userService.retrieveProfile(userId));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<UserResponse>> searchByNickname(
+    @PostMapping("/search")
+    public ResponseEntity<UserResponse> searchByNickname(
             @RequestBody UserNicknameRequest request
     ) {
-        return ResponseEntity.ok(userService.searchFriendsByNickname(request.getNickname()));
+        return ResponseEntity.ok(userService.retrieveProfileByNickname(request.getNickname()));
     }
 }
