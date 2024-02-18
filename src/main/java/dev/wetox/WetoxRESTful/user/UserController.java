@@ -28,7 +28,7 @@ public class UserController {
         return ResponseEntity.ok(userService.retrieveProfile(userId));
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<UserResponse> searchByNickname(
             @RequestBody UserNicknameRequest request
     ) {
