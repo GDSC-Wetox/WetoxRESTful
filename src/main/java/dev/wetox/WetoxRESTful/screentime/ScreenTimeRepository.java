@@ -18,5 +18,6 @@ public interface ScreenTimeRepository extends JpaRepository<ScreenTime, Long> {
     @Query("select s FROM ScreenTime s WHERE s.user.id = :userId and s.updatedDate <= :dateDuration ORDER BY s.updatedDate DESC")
     List<ScreenTime> findByDate(@Param("userId") Long userId, LocalDateTime dateDuration);
 
-    List<ScreenTime> findScreenTimeByUserId(Long userId);
+    @Query("SELECT s FROM ScreenTime s WHERE s.user.id = :userId and s.updatedDate BETWEEN :fromDate AND :toDate ORDER BY s.updatedDate DESC")
+    List<ScreenTime> findByDateDuration(Long userId, LocalDateTime fromDate, LocalDateTime toDate);
 }

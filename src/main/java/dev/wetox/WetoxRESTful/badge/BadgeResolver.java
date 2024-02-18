@@ -7,13 +7,10 @@ import dev.wetox.WetoxRESTful.screentime.ScreenTimeRepository;
 import dev.wetox.WetoxRESTful.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,84 +19,87 @@ public enum BadgeResolver {
     NO_SCREEN_TIME_ONE_DAY(new BadgeResolvable() {
         @Override
         public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
-            Page<ScreenTime> screenTimePage = screenTimeRepository.findLatestByUserId(user.getId(), PageRequest.of(0, 1));
-            List<ScreenTime> latestScreenTime = screenTimePage.getContent();
-            if (latestScreenTime.isEmpty())
-                return false;
-            return latestScreenTime.get(0).getUpdatedDate().isBefore(
+            List<ScreenTime> lastDayScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(1).toLocalDate(), LocalTime.MIDNIGHT),
                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
             );
+            if (lastDayScreenTimes.isEmpty())
+                return false;
+            ScreenTime latestScreenTimeOfLastDay = lastDayScreenTimes.get(0);
+            return latestScreenTimeOfLastDay.getTotalDuration() == 0L;
         }
     }),
 
     NO_SCREEN_TIME_ONE_WEEK(new BadgeResolvable() {
         @Override
         public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
-            Page<ScreenTime> screenTimePage = screenTimeRepository.findLatestByUserId(user.getId(), PageRequest.of(0, 1));
-            List<ScreenTime> latestScreenTime = screenTimePage.getContent();
-            if (latestScreenTime.isEmpty())
-                return false;
-            return latestScreenTime.get(0).getUpdatedDate().isBefore(
-                    LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT)
+            List<ScreenTime> lastWeekScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT),
+                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
             );
+            if (lastWeekScreenTimes.isEmpty())
+                return false;
+            LocalDateTime lastDate = null;
+            for (ScreenTime screenTime: lastWeekScreenTimes) {
+                if (lastDate != null && screenTime.getUpdatedDate().isAfter(lastDate))
+                    continue;
+                if (screenTime.getTotalDuration() != 0L)
+                    return false;
+                lastDate = LocalDateTime.of(screenTime.getUpdatedDate().toLocalDate(), LocalTime.MIDNIGHT);
+            }
+            return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT));
         }
     }),
 
     NO_GAME_ONE_DAY(new BadgeResolvable() {
         @Override
         public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
-            List<ScreenTime> screenTimes = screenTimeRepository.findByDate(
+            List<ScreenTime> lastDayScreenTimes = screenTimeRepository.findByDateDuration(
                     user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(1).toLocalDate(), LocalTime.MIDNIGHT),
                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
             );
-            Optional<ScreenTime> game = screenTimes.stream()
-                    .filter(s -> {
-                        Optional<CategoryScreenTime> gameCategoryScreenTime = s.getCategoryScreenTimes().stream()
-                                .filter(c -> c.getCategory() == Category.GAME)
-                                .findFirst();
-                        return gameCategoryScreenTime.isPresent() && gameCategoryScreenTime.get().getDuration() > 0;
-                    })
-                    .findFirst();
-            return game.map(screenTime -> screenTime.getUpdatedDate().isBefore(
-                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
-            )).orElse(false);
+            if (lastDayScreenTimes.isEmpty())
+                return false;
+            ScreenTime latestScreenTimeOfLastDay = lastDayScreenTimes.get(0);
+            return getGameDuration(latestScreenTimeOfLastDay) == 0L;
         }
     }),
 
     NO_GAME_ONE_WEEK(new BadgeResolvable() {
         @Override
         public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
-            List<ScreenTime> screenTimes = screenTimeRepository.findByDate(
+            List<ScreenTime> lastWeekScreenTimes = screenTimeRepository.findByDateDuration(
                     user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT),
                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
             );
-            Optional<ScreenTime> game = screenTimes.stream()
-                    .filter(s -> {
-                        Optional<CategoryScreenTime> gameCategoryScreenTime = s.getCategoryScreenTimes().stream()
-                                .filter(c -> c.getCategory() == Category.GAME)
-                                .findFirst();
-                        return gameCategoryScreenTime.isPresent() && gameCategoryScreenTime.get().getDuration() > 0;
-                    })
-                    .findFirst();
-            return game.map(screenTime -> screenTime.getUpdatedDate().isBefore(
-                    LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT)
-            )).orElse(false);
+            if (lastWeekScreenTimes.isEmpty())
+                return false;
+            LocalDateTime lastDate = null;
+            for (ScreenTime screenTime: lastWeekScreenTimes) {
+                if (lastDate != null && screenTime.getUpdatedDate().isAfter(lastDate))
+                    continue;
+                if (getGameDuration(screenTime) != 0L)
+                    return false;
+                lastDate = LocalDateTime.of(screenTime.getUpdatedDate().toLocalDate(), LocalTime.MIDNIGHT);
+            }
+            return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT));
         }
     }),
 
     ;
-//    NO_SCREEN_TIME_ONE_DAY
-//    NO_SCREEN_TIME_ONE_WEEK # 스크린 타임 없는 일주일 달성
-//
-//    NO_GAME_ONE_DAY # 게임 없는 하루 달성
-//    NO_GAME_ONE_WEEK # 게임 없는 한 주 달성
-//
-//    NO_SCREEN_TIME_AT_LATE_NIGHT # 늦은 시간(22시 ~ 02시)에 스크린 타임 없음 달성
-//
-//    INFORMATION_AND_BOOK_ONE_DAY # 독서 하루 달성
-//    INFORMATION_AND_BOOK_ONE_WEEK # 독서 일주일 달성
 
     private final BadgeResolvable badgeResolvable;
+
+    private static Long getGameDuration(ScreenTime screenTime) {
+        return screenTime.getCategoryScreenTimes().stream()
+                .filter(c -> c.getCategory() == Category.GAME)
+                .map(CategoryScreenTime::getDuration)
+                .reduce(0L, Long::sum);
+    }
 
     public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
         return badgeResolvable.resolve(user, screenTimeRepository, badgeRepository, userBadgeRepository);
