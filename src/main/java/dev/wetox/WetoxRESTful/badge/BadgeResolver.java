@@ -171,6 +171,66 @@ public enum BadgeResolver {
         }
     }),
 
+    NO_YOUTUBE_ONE_DAY(new BadgeResolvable() {
+        @Override
+        public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
+            List<ScreenTime> lastDayScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(1).toLocalDate(), LocalTime.MIDNIGHT),
+                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
+            );
+            if (lastDayScreenTimes.isEmpty())
+                return false;
+            ScreenTime latestScreenTimeOfLastDay = lastDayScreenTimes.get(0);
+            return getEntertainementDuration(latestScreenTimeOfLastDay) == 0L;
+        }
+    }),
+
+    NO_YOUTUBE_ONE_WEEK(new BadgeResolvable() {
+        @Override
+        public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
+            List<ScreenTime> lastWeekScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT),
+                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
+            );
+            if (lastWeekScreenTimes.isEmpty())
+                return false;
+            LocalDateTime lastDate = null;
+            for (ScreenTime screenTime: lastWeekScreenTimes) {
+                if (lastDate != null && screenTime.getUpdatedDate().isAfter(lastDate))
+                    continue;
+                if (getEntertainementDuration(screenTime) != 0L)
+                    return false;
+                lastDate = LocalDateTime.of(screenTime.getUpdatedDate().toLocalDate(), LocalTime.MIDNIGHT);
+            }
+            return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT));
+        }
+    }),
+
+    NO_YOUTUBE_ONE_MONTH(new BadgeResolvable() {
+        @Override
+        public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
+            List<ScreenTime> lastWeekScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(30).toLocalDate(), LocalTime.MIDNIGHT),
+                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
+            );
+            if (lastWeekScreenTimes.isEmpty())
+                return false;
+            LocalDateTime lastDate = null;
+            for (ScreenTime screenTime: lastWeekScreenTimes) {
+                if (lastDate != null && screenTime.getUpdatedDate().isAfter(lastDate))
+                    continue;
+                if (getEntertainementDuration(screenTime) != 0L)
+                    return false;
+                lastDate = LocalDateTime.of(screenTime.getUpdatedDate().toLocalDate(), LocalTime.MIDNIGHT);
+            }
+            return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(30).toLocalDate(), LocalTime.MIDNIGHT));
+        }
+    }),
+
+
 
     INFORMATION_AND_BOOK_ONE_DAY(new BadgeResolvable() {
         @Override
@@ -270,6 +330,13 @@ public enum BadgeResolver {
     private static Long getBookDuration(ScreenTime screenTime) {
         return screenTime.getCategoryScreenTimes().stream()
                 .filter(c -> c.getCategory() == Category.INFORMATION_AND_BOOK)
+                .map(CategoryScreenTime::getDuration)
+                .reduce(0L, Long::sum);
+    }
+
+    private static Long getEntertainementDuration(ScreenTime screenTime) {
+        return screenTime.getCategoryScreenTimes().stream()
+                .filter(c -> c.getCategory() == Category.ENTERTAINEMENT)
                 .map(CategoryScreenTime::getDuration)
                 .reduce(0L, Long::sum);
     }
