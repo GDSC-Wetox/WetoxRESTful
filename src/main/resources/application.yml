@@ -12,7 +12,17 @@ spring:
       hibernate:
         format_sql: true
 
+  cloud:
+    gcp:
+      credentials:
+        default-scopes: ${GOOGLE_APPLICATION_CREDENTIALS}
+      storage:
+        project-id: ${GOOGLE_PROJECT_ID}
+
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+
+firebase:
+  credential: ${FIREBASE_CREDENTIALS}

@@ -1,6 +1,10 @@
 package dev.wetox.WetoxRESTful.auth;
 
+import dev.wetox.WetoxRESTful.exception.UserNotFoundException;
+import dev.wetox.WetoxRESTful.exception.UserRegisterDuplicateException;
+import dev.wetox.WetoxRESTful.image.ImageService;
 import dev.wetox.WetoxRESTful.jwt.JwtService;
+import dev.wetox.WetoxRESTful.user.OAuthProvider;
 import dev.wetox.WetoxRESTful.user.User;
 import dev.wetox.WetoxRESTful.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static dev.wetox.WetoxRESTful.user.Role.USER;
 
@@ -20,17 +25,38 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final KakaoOIDCService kakaoOIDCService;
+    private final ImageService imageService;
 
     private static final String password = "wetokWkdWkd";
-
+    
     @Transactional
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(
+            String nickname,
+            OAuthProvider oauthProvider,
+            String openId,
+            String deviceToken,
+            MultipartFile profileImage
+    ) {
+        String subject = kakaoOIDCService.extractSubject(openId);
+
+        if (userRepository
+                .findByOauthProviderAndOauthSubject(oauthProvider, subject)
+                .isPresent()) {
+            throw new UserRegisterDuplicateException();
+        }
+
+        String imageUUID = imageService.uploadImage(profileImage);
+
         User user = User.builder()
-                .nickname(request.getNickname())
+                .nickname(nickname)
                 .role(USER)
                 .password(passwordEncoder.encode(password))
+                .oauthSubject(subject)
+                .oauthProvider(oauthProvider)
+                .profileImageUUID(imageUUID)
+                .deviceToken(deviceToken)
                 .build();
-//        todo nickname 유일설 검사, 인증 로직 추가
         userRepository.save(user);
         String jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -38,19 +64,21 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(OAuthProvider oAuthProvider, String openId) {
+        String subject = kakaoOIDCService.extractSubject(openId);
+        User user = userRepository.findByOauthProviderAndOauthSubject(oAuthProvider, subject)
+                .orElseThrow(UserNotFoundException::new);
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getNickname(),
+                        user.getNickname(),
                         password
                 )
         );
-//        todo OAuth 서버와 추가 인증 로직 구현할 것
-        User user = userRepository.findByNickname(request.getNickname())
-                .orElseThrow();
         String jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .accessToken(jwt)
                 .build();
     }
+
 }

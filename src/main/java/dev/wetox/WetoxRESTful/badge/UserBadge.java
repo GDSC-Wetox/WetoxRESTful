@@ -3,7 +3,6 @@ package dev.wetox.WetoxRESTful.badge;
 import dev.wetox.WetoxRESTful.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +10,6 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Setter
 public class UserBadge {
     @Id
     @GeneratedValue
@@ -24,8 +22,16 @@ public class UserBadge {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "badge_id")
-    private User badge;
+    private Badge badge;
 
-    private LocalDateTime rewaredDate;
+    private LocalDateTime rewardedDate;
+
+    public static UserBadge build(User user, Badge badge) {
+        UserBadge userBadge = new UserBadge();
+        userBadge.user = user;
+        userBadge.badge = badge;
+        userBadge.rewardedDate = LocalDateTime.now();
+        return userBadge;
+    }
 }
 

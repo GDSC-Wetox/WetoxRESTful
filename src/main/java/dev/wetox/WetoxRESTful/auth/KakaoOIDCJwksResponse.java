@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
-    private String nickname;
-//    인증 정보...
+public class KakaoOIDCJwksResponse {
+    private List<KakaoOIDCJwkResponse> keys;
 }

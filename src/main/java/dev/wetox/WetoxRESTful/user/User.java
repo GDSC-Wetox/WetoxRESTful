@@ -32,6 +32,14 @@ public class User implements UserDetails {
 
     private String password;
 
+    @Enumerated(STRING)
+    private OAuthProvider oauthProvider;
+    private String oauthSubject;
+
+    private String profileImageUUID;
+
+    private String deviceToken;
+
     @OneToMany(mappedBy = "user")
     private List<UserBadge> rewards = new ArrayList<>();
 
