@@ -56,6 +56,28 @@ public enum BadgeResolver {
         }
     }),
 
+    NO_SCREEN_TIME_ONE_MONTH(new BadgeResolvable() {
+        @Override
+        public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
+            List<ScreenTime> lastWeekScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(30).toLocalDate(), LocalTime.MIDNIGHT),
+                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
+            );
+            if (lastWeekScreenTimes.isEmpty())
+                return false;
+            LocalDateTime lastDate = null;
+            for (ScreenTime screenTime: lastWeekScreenTimes) {
+                if (lastDate != null && screenTime.getUpdatedDate().isAfter(lastDate))
+                    continue;
+                if (screenTime.getTotalDuration() != 0L)
+                    return false;
+                lastDate = LocalDateTime.of(screenTime.getUpdatedDate().toLocalDate(), LocalTime.MIDNIGHT);
+            }
+            return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(30).toLocalDate(), LocalTime.MIDNIGHT));
+        }
+    }),
+
     NO_SCREEN_TIME_AT_LATE_NIGHT(new BadgeResolvable() {
         @Override
         public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
@@ -126,6 +148,29 @@ public enum BadgeResolver {
             return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(7).toLocalDate(), LocalTime.MIDNIGHT));
         }
     }),
+
+    NO_GAME_ONE_MONTH(new BadgeResolvable() {
+        @Override
+        public boolean resolve(User user, ScreenTimeRepository screenTimeRepository, BadgeRepository badgeRepository, UserBadgeRepository userBadgeRepository) {
+            List<ScreenTime> lastWeekScreenTimes = screenTimeRepository.findByDateDuration(
+                    user.getId(),
+                    LocalDateTime.of(LocalDateTime.now().minusDays(30).toLocalDate(), LocalTime.MIDNIGHT),
+                    LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIDNIGHT)
+            );
+            if (lastWeekScreenTimes.isEmpty())
+                return false;
+            LocalDateTime lastDate = null;
+            for (ScreenTime screenTime: lastWeekScreenTimes) {
+                if (lastDate != null && screenTime.getUpdatedDate().isAfter(lastDate))
+                    continue;
+                if (getGameDuration(screenTime) != 0L)
+                    return false;
+                lastDate = LocalDateTime.of(screenTime.getUpdatedDate().toLocalDate(), LocalTime.MIDNIGHT);
+            }
+            return lastDate.isEqual(LocalDateTime.of(LocalDateTime.now().minusDays(30).toLocalDate(), LocalTime.MIDNIGHT));
+        }
+    }),
+
 
     INFORMATION_AND_BOOK_ONE_DAY(new BadgeResolvable() {
         @Override
@@ -210,9 +255,8 @@ public enum BadgeResolver {
             return true;
         }
     }),
+
     ;
-
-
 
     private final BadgeResolvable badgeResolvable;
 
