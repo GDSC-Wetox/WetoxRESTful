@@ -39,8 +39,6 @@ iOS service that tracks my screen time by category and usage duration, allowing 
 |**Version Control**|Git, GitHub|
 |**Communication**|Notion, Discord|
 
-<br><br>
-
 ## 🫂 Developers
 
 |손지석|허혜인|
@@ -48,8 +46,6 @@ iOS service that tracks my screen time by category and usage duration, allowing 
 |<img src="https://avatars.githubusercontent.com/u/70203010?v=4" width="190">|<img src="https://avatars.githubusercontent.com/u/128613248?s=400&v=4" width="190">
 |[Jiseok Son](https://github.com/jiseokson)|[Hyein Heo](https://github.com/hye-inA)|
 |<p align="left">- Authorization, Authentication<br>- Screentime feature<br>- Badge feature|<p align="left">- Friendship feature<br>- Badge feature|
-
-<br>
 
 ### Special Thanks to 
 |Designer 김보영|
