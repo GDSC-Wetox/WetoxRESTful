@@ -47,11 +47,11 @@ iOS service that tracks my screen time by category and usage duration, allowing 
 |:-:|:-:|
 |<img src="https://avatars.githubusercontent.com/u/70203010?v=4" width="190">|<img src="https://avatars.githubusercontent.com/u/128613248?s=400&v=4" width="190">
 |[Jiseok Son](https://github.com/jiseokson)|[Hyein Heo](https://github.com/hye-inA)|
-|<p align="left">- 로그인 기능 구현<br>- 스크린타임 기능 구현<br>- 배지 기능 구현|<p align="left">- 친구 기능 구현<br>- 배지 통신 구현|
+|<p align="left">- Authorization, Authentication<br>- Screentime feature<br>- Badge feature|<p align="left">- Friendship feature<br>- Badge feature|
 
 <br>
 
 ### Special Thanks to 
 |Designer 김보영|
 |:-:|
-|<p align="left">- 로고 디자인 <br>- MainView, ScreenInputView 디자인|
+|<p align="left">- Logo design <br>- MainView, ScreenInputView design|
