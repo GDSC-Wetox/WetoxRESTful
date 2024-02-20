@@ -45,7 +45,7 @@ iOS service that tracks my screen time by category and usage duration, allowing 
 
 |손지석|허혜인|
 |:-:|:-:|
-|<img src="#" width="190">|<img src="#" width="190">
+|<img src="https://avatars.githubusercontent.com/u/70203010?v=4" width="190">|<img src="#" width="190">
 |[Jiseok Son](https://github.com/jiseokson)|[Hyein Heo](https://github.com/hye-inA)|
 |<p align="left">- 로그인 기능 구현<br>- 스크린타임 기능 구현<br>- 배지 기능 구현|<p align="left">- 친구 기능 구현<br>- 배지 통신 구현|
 
