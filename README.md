@@ -88,7 +88,7 @@ iOS service that tracks my screen time by category and usage duration, allowing 
     - Personalized rewards through AI
     - Analyze apps or categories with significant usage changes to provide personalized rewards 
 
-## Architecture
+## 🏗️ Architecture
 ![image](https://github.com/GDSC-Wetox/WetoxRESTful/assets/70203010/7adbd2da-eee4-420b-815a-c6a84db651ec)
 
 ## :sparkles: Skills & Tech Stack
