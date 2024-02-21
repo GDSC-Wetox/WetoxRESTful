@@ -37,7 +37,7 @@ iOS service that tracks my screen time by category and usage duration, allowing 
    ```bash
    ./gradlew clean build
    ```
-5. Set up NGINX to forward requests to API servers to 8080 ports. The following is an example of a NGINX setup.
+5. The request to the API server is forwarded to 8080 ports, and the request for AI-generated images is forwarded to 5000 ports. The following is an example of a NGINX setup.
    ```
    server {
        listen 80;
