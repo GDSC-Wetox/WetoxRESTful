@@ -54,4 +54,5 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(userService.checkNicknameDuplicated(request.getNickname()));
     }
+
 }
