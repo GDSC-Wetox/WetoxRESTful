@@ -73,6 +73,33 @@ iOS service that tracks my screen time by category and usage duration, allowing 
    ```bash
    nohup java -jar <WetoxRESTful application you built> &
    ```
+10. It also runs a Python server with the following code. Make sure the AI-generated image has the correct path.
+    ```python
+    import os
+    import random
+
+    from flask import Flask, send_file
+    from PIL import Image
+    from io import BytesIO
+
+    app = Flask(__name__)
+
+    @app.route('/ai/image/profile')
+    def get_image():
+        directory_path = <<Path where AI-generated images are stored>>
+        all_files = os.listdir(directory_path)
+        png_files = [file for file in all_files if file.lower().endswith('.png')]
+        selected_file = random.choice(png_files)
+        file_path = os.path.join(directory_path, selected_file)
+        image = Image.open(file_path)
+        image_io = BytesIO()
+        image.save(image_io, format='PNG')
+        image_io.seek(0)
+        return send_file(image_io, mimetype='image/png')
+
+    if __name__ == '__main__':
+        app.run(debug=True)
+    ```
 
 ## 💡 Features 
 - **Screen Time Sharing**
