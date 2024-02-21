@@ -15,7 +15,66 @@ iOS service that tracks my screen time by category and usage duration, allowing 
 - Protect mental health from the threats posed by smartphone addiction
 
 
-## 💡Features 
+## ⌨️ How to run
+1. Clone the WetoxRESTful repository to the appropriate location and enter the directory.
+   ```bash
+   # if you are using HTTPS to clone
+   git clone https://github.com/GDSC-Wetox/WetoxRESTful.git
+
+   # or...
+   
+   # if you are using SSH to clone
+   git clone git@github.com:GDSC-Wetox/WetoxRESTful.git
+   ```
+   ```bash
+   cd WetoxRESTful
+   ```
+2. Make sure you are at branch named `release`
+   ```bash
+   git switch release
+   ```
+3. Build projects using gradle.
+   ```bash
+   ./gradlew clean build
+   ```
+5. Set up NGINX to forward requests to API servers to 8080 ports. The following is an example of a NGINX setup.
+   ```
+   server {
+       listen 80;
+       server_name api.wetox.dev;
+    
+       location / {
+           proxy_pass http://localhost:8080;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+    
+       location /ai {
+           proxy_pass http://localhost:5000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+   ```
+7. Check the environment variables, database settings, and security settings.]
+   ```
+   export GOOGLE_PROJECT_ID=<Google project ID here>
+   export GOOGLE_APPLICATION_CREDENTIALS=<Google Application crendential file path here>
+   export FIREBASE_CREDENTIALS=<Firebase credential file path here>
+   export MY_SQL_DEMO=<MySQL URL here>
+   export MY_SQL_DEMO_USER=<MySQL username here>
+   export MY_SQL_DEMO_PASSWD=<MySQL password here>
+   ```
+9. Run the built project with the following command.
+   ```bash
+   nohup java -jar <WetoxRESTful application you built> &
+   ```
+
+## 💡 Features 
 - **Screen Time Sharing**
     - Share Daily/Weekly screen time for yourself and friends <br>
 - **Traffic Light Feature**
@@ -28,7 +87,6 @@ iOS service that tracks my screen time by category and usage duration, allowing 
 - **Badges**
     - Personalized rewards through AI
     - Analyze apps or categories with significant usage changes to provide personalized rewards 
-<br><br>
 
 ## :sparkles: Skills & Tech Stack
 |Category|Item|
