@@ -109,7 +109,9 @@ public class FriendshipService {
     }
 
     //나에게 친구요청을 보낸 친구목록
-    public List<FriendshipResponse> findByToIdAndStatus(Long toId, FriendshipStatus status) {
-        return FriendshipResponse.from(friendshipRepository.findByToIdAndStatus(toId, status));
+    public FriendshipListResponse findByToIdAndStatus(Long toId, FriendshipStatus status) {
+        return FriendshipListResponse.builder()
+                .friendRequestsList(FriendshipResponse.from(friendshipRepository.findByToIdAndStatus(toId, status)))
+                .build();
     }
 }
