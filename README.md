@@ -29,7 +29,7 @@ iOS service that tracks my screen time by category and usage duration, allowing 
    ```bash
    cd WetoxRESTful
    ```
-2. Make sure you are at branch named `release`
+2. Make sure you are at the branch named `release`
    ```bash
    git switch release
    ```
