@@ -33,12 +33,12 @@ public class FriendshipController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<UserResponse>> getFriendship(@AuthenticationPrincipal User user) {
+    public ResponseEntity<UserListResponse> getFriendship(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(friendshipService.getFriendShip(user.getId()));
     }
 
     @GetMapping("/request")
-    public ResponseEntity<List<FriendshipResponse>> findFriendshipRequestById(@AuthenticationPrincipal User user) {
+    public ResponseEntity<FriendshipListResponse> findFriendshipRequestById(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(friendshipService.findByToIdAndStatus(user.getId(), FriendshipStatus.REQUEST));
     }
 }

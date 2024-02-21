@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class FriendshipListResponse {
-
-    private Long userId;
-    private String nickname;
-    private Long totalDuration;
-    private String profileImage;
+    private List<FriendshipResponse> friendRequestsList;
 }
