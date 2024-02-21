@@ -100,12 +100,13 @@ public class FriendshipService {
 
     //전체 친구 목록 조회
     @Transactional(readOnly = true)
-    public List<UserResponse> getFriendShip(Long userId) {
+    public UserListResponse getFriendShip(Long userId) {
         List<Friendship> friendShips = friendshipRepository.findByToIdAndStatus(userId, FriendshipStatus.ACCEPT);
-        return friendShips.stream()
+        List<UserResponse> userList = friendShips.stream()
                 .map(friendship -> friendship.getFrom().getId())
                 .map(userService::retrieveProfile)
                 .toList();
+        return UserListResponse.builder().userList(userList).build();
     }
 
     //나에게 친구요청을 보낸 친구목록

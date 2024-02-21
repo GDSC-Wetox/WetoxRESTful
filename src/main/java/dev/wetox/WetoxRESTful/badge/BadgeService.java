@@ -20,7 +20,7 @@ public class BadgeService {
     private final UserBadgeRepository userBadgeRepository;
     private final ScreenTimeRepository screenTimeRepository;
 
-    public List<BadgeResponse> listRewardedBadge(Long userId) {
+    public BadgeListResponse listRewardedBadge(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<Badge> rewardedBadges = userBadgeRepository.findAllByUser(user).stream()
                 .map(UserBadge::getBadge)
@@ -29,17 +29,17 @@ public class BadgeService {
         List<Badge> notRewardedBadges = badgeRepository.findAll().stream()
                 .filter(badge -> !rewardedBadges.contains(badge))
                 .toList();
-        return Stream.concat(
+        List<BadgeResponse> badgeList = Stream.concat(
                 userBadges.stream()
                         .map(BadgeResponse::buildRewarded),
                 notRewardedBadges.stream()
                         .map(BadgeResponse::buildNotRewarded)
         ).toList();
-
+        return BadgeListResponse.builder().badgeList(badgeList).build();
     }
 
     @Transactional
-    public List<BadgeResponse> updateBadge(Long userId) {
+    public BadgeListResponse updateBadge(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<Badge> rewardedBadges = userBadgeRepository.findAllByUser(user).stream()
                 .map(UserBadge::getBadge)
