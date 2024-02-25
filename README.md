@@ -124,6 +124,7 @@ Among the UN's Sustainable Development Goals, "Ensure healthy lives and promote 
 
 ## 🏗️ Architecture
 ![image](https://github.com/GDSC-Wetox/WetoxRESTful/assets/70203010/7adbd2da-eee4-420b-815a-c6a84db651ec)
+Users can update their screen time through the Wetox application (screen to update screen time), or check their friends' screen time. The Wetox application communicates with the Wetox REST API server, which is distributed as Compute engine. This allows you to store data entered from users or query friends' data. Your data is stored in the MySQL database and is read or changed according to the needs of the service. Profile using the image generated as an image generation model for Tensor flow, and the generated images are stored in Cloud storage. If an event occurs, such as a friend request, a push notification request is sent to Firebase FCM, and a notification is displayed on the Wetox application user's smartphone. (A screen to receive a friend request notification)
 
 ## :sparkles: Skills & Tech Stack
 |Category|Item|
