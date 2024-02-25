@@ -3,16 +3,19 @@
 <img width="150" src="https://github.com/GDSC-Wetox/Wetox-iOS/assets/99120199/f702a1a8-f63e-4f11-839e-0eb8cfcdd6cc">
 
 # Wetox
-**“Our detox mate, Wetox”** <br/>
-GDSC-Hongik project <br/><br/>
-iOS service that tracks my screen time by category and usage duration, allowing me to share this information with friends to facilitate a digital detox together <br/>
+**"Your detox mate, Wetox"** <br/>
+GDSC-Hongik Project <br/><br/>
+<img width="720" src="https://github.com/GDSC-Wetox/Wetox-iOS/assets/99120199/c37683f5-1326-4674-916f-b837d80bfac5">
+
+
+An iOS service that allows you to understand and share your screen time categories and usage with friends, enabling digital detox together. <br/>
 </div></div></div>
 
-## 🥅 Goal
-"Ensure healthy lives and promote well-being for all at all ages" as part of the UN's Sustainable Development Goals
-- Encourage healthy smartphone use by sharing screen time, fostering friendly competition, and providing positive feedback
-- Motivate and stimulate healthy smartphone habits through a reward system of badges 
-- Protect mental health from the threats posed by smartphone addiction
+## 🥅 Goals
+Among the UN's Sustainable Development Goals, "Ensure healthy lives and promote well-being for all at all ages":
+- Share screen time to encourage healthy smartphone usage through positive competition and feedback.
+- Motivate and stimulate healthy smartphone usage with a badge (or medal) reward system.
+- Protect mental health threatened by smartphone addiction.
 
 
 ## ⌨️ How to run
